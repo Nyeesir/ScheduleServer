@@ -19,8 +19,8 @@ var (
 )
 
 func IcsToJson(icsString string) ([]byte, error) {
-	callendar := CalendarTemplate{}
-	scanner := bufio.NewScanner(strings.NewReader(icsString))
+	//callendar := CalendarTemplate{}
+	// scanner := bufio.NewScanner(strings.NewReader(icsString))
 
 	//if !scanner.Scan() {
 	//	return nil, ErrCantReadLine

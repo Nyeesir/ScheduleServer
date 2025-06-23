@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "go_schedule_server/protos";
+
+service ScheduleScraper {
+  rpc GetMessage(debugMessage) returns (debugMessage);
+}
+
+message debugMessage {
+  string message = 1;
+}
+
+message ScheduleTypes {
+  repeated ScheduleType scheduleType = 1;
+}
+
+message ScheduleType {
+  string scheduleTypeName = 1;
+  string scheduleTpeId = 2;
+}

@@ -1,11 +1,26 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
-	"go_schedule_server/icsProcessing"
+	pb "go_schedule_server/protos"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"os"
+	"time"
+)
+
+var grpcConn *grpc.ClientConn
+var grpcClient pb.ScheduleScraperClient
+
+var someMessage string = "Asd"
+
+var (
+	addr         = flag.String("addr", "localhost:50051", "the address to connect to")
+	debugMessage = flag.String("message", someMessage, "message to send")
 )
 
 type MessageTemplate struct {
@@ -13,31 +28,40 @@ type MessageTemplate struct {
 	Error   bool   `json:"error"`
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func createGrpcConnection() {
+	flag.Parse()
+	var err error
+	grpcConn, err = grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to create scrapper connection: %v\n", err)
+		os.Exit(1)
+	}
+	grpcClient = pb.NewScheduleScraperClient(grpcConn)
+}
+
+func scheduleTypeshandler(w http.ResponseWriter, r *http.Request) {
 	jsonEcoder := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
 	message := MessageTemplate{Error: false}
 
-	dat, err := os.ReadFile("INŻIIIIO1.ics")
-	if err != nil {
-		message.Error = true
-		message.Message = "Could not read file"
-		w.WriteHeader(http.StatusInternalServerError)
-		jsonEcoder.Encode(message)
-	}
-	//fmt.Println(string(dat))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 
-	scheduleJSON, err := icsProcessing.IcsToJson(string(dat))
+	req, err := grpcClient.GetMessage(ctx, &pb.DebugMessage{Message: "asd"})
 	if err != nil {
 		message.Error = true
-		message.Message = "Could not parse file"
+		message.Message = "Could not get to the scraper"
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonEcoder.Encode(message)
+		return
 	}
-	fmt.Println(string(scheduleJSON))
+
+	jsonEcoder.Encode(req)
 }
 
 func main() {
-	http.HandleFunc("GET /schedules/test", handler)
+	createGrpcConnection()
+	defer grpcConn.Close()
+	http.HandleFunc("GET /scheduleTypes", scheduleTypeshandler)
 	http.ListenAndServe(":8080", nil)
 }
