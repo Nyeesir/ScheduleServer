@@ -2,18 +2,60 @@ syntax = "proto3";
 option go_package = "go_schedule_server/protos";
 
 service ScheduleScraper {
-  rpc GetMessage(debugMessage) returns (debugMessage);
+  rpc getScheduleTypes(Empty) returns (ScheduleTypes);
+  rpc getUpdateTime(Empty) returns (UpdateTime);
+  rpc getScheduleList (scheduleType) returns (ScheduleListResponse);
+  rpc getAvailableScheduleTimeGroups (Empty) returns (AvailableTimeGroups);
+  rpc getScheduleFileAsStr (ScheduleFileRequest) returns (ScheduleFileContent);
 }
 
-message debugMessage {
-  string message = 1;
-}
+message Empty{}
 
 message ScheduleTypes {
-  repeated ScheduleType scheduleType = 1;
+  repeated ScheduleType scheduleTypes = 1;
+
+  message ScheduleType {
+    string scheduleTypeName = 1;
+    string scheduleTpeId = 2;
+  }
 }
 
-message ScheduleType {
-  string scheduleTypeName = 1;
-  string scheduleTpeId = 2;
+message UpdateTime {
+  float time = 1;
+}
+
+message scheduleType {
+  int32 type = 1;
+}
+
+message ScheduleListResponse {
+  repeated ScheduleItem items = 1;
+}
+
+message ScheduleItem {
+  string name = 1;
+  string id = 2;
+  string type = 3;
+  bool hasSchedule = 4;
+  repeated ScheduleItem children = 5;
+}
+
+message AvailableTimeGroups {
+  repeated TimeGroup period = 1;
+  repeated TimeGroup weeks = 2;
+}
+
+message TimeGroup {
+  string name = 1;
+  string id = 2;
+}
+
+message ScheduleFileRequest {
+  int32 schedType = 1;
+  int32 schedId = 2;
+  int32 timeGroup = 3;
+}
+
+message ScheduleFileContent {
+  string content = 1;
 }

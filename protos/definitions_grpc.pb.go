@@ -19,14 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ScheduleScraper_GetMessage_FullMethodName = "/ScheduleScraper/GetMessage"
+	ScheduleScraper_GetScheduleTypes_FullMethodName               = "/ScheduleScraper/getScheduleTypes"
+	ScheduleScraper_GetUpdateTime_FullMethodName                  = "/ScheduleScraper/getUpdateTime"
+	ScheduleScraper_GetScheduleList_FullMethodName                = "/ScheduleScraper/getScheduleList"
+	ScheduleScraper_GetAvailableScheduleTimeGroups_FullMethodName = "/ScheduleScraper/getAvailableScheduleTimeGroups"
+	ScheduleScraper_GetScheduleFileAsStr_FullMethodName           = "/ScheduleScraper/getScheduleFileAsStr"
 )
 
 // ScheduleScraperClient is the client API for ScheduleScraper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ScheduleScraperClient interface {
-	GetMessage(ctx context.Context, in *DebugMessage, opts ...grpc.CallOption) (*DebugMessage, error)
+	GetScheduleTypes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ScheduleTypes, error)
+	GetUpdateTime(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UpdateTime, error)
+	GetScheduleList(ctx context.Context, in *ScheduleType, opts ...grpc.CallOption) (*ScheduleListResponse, error)
+	GetAvailableScheduleTimeGroups(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AvailableTimeGroups, error)
+	GetScheduleFileAsStr(ctx context.Context, in *ScheduleFileRequest, opts ...grpc.CallOption) (*ScheduleFileContent, error)
 }
 
 type scheduleScraperClient struct {
@@ -37,10 +45,50 @@ func NewScheduleScraperClient(cc grpc.ClientConnInterface) ScheduleScraperClient
 	return &scheduleScraperClient{cc}
 }
 
-func (c *scheduleScraperClient) GetMessage(ctx context.Context, in *DebugMessage, opts ...grpc.CallOption) (*DebugMessage, error) {
+func (c *scheduleScraperClient) GetScheduleTypes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ScheduleTypes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DebugMessage)
-	err := c.cc.Invoke(ctx, ScheduleScraper_GetMessage_FullMethodName, in, out, cOpts...)
+	out := new(ScheduleTypes)
+	err := c.cc.Invoke(ctx, ScheduleScraper_GetScheduleTypes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *scheduleScraperClient) GetUpdateTime(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UpdateTime, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateTime)
+	err := c.cc.Invoke(ctx, ScheduleScraper_GetUpdateTime_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *scheduleScraperClient) GetScheduleList(ctx context.Context, in *ScheduleType, opts ...grpc.CallOption) (*ScheduleListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ScheduleListResponse)
+	err := c.cc.Invoke(ctx, ScheduleScraper_GetScheduleList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *scheduleScraperClient) GetAvailableScheduleTimeGroups(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AvailableTimeGroups, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AvailableTimeGroups)
+	err := c.cc.Invoke(ctx, ScheduleScraper_GetAvailableScheduleTimeGroups_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *scheduleScraperClient) GetScheduleFileAsStr(ctx context.Context, in *ScheduleFileRequest, opts ...grpc.CallOption) (*ScheduleFileContent, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ScheduleFileContent)
+	err := c.cc.Invoke(ctx, ScheduleScraper_GetScheduleFileAsStr_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +99,11 @@ func (c *scheduleScraperClient) GetMessage(ctx context.Context, in *DebugMessage
 // All implementations must embed UnimplementedScheduleScraperServer
 // for forward compatibility.
 type ScheduleScraperServer interface {
-	GetMessage(context.Context, *DebugMessage) (*DebugMessage, error)
+	GetScheduleTypes(context.Context, *Empty) (*ScheduleTypes, error)
+	GetUpdateTime(context.Context, *Empty) (*UpdateTime, error)
+	GetScheduleList(context.Context, *ScheduleType) (*ScheduleListResponse, error)
+	GetAvailableScheduleTimeGroups(context.Context, *Empty) (*AvailableTimeGroups, error)
+	GetScheduleFileAsStr(context.Context, *ScheduleFileRequest) (*ScheduleFileContent, error)
 	mustEmbedUnimplementedScheduleScraperServer()
 }
 
@@ -62,8 +114,20 @@ type ScheduleScraperServer interface {
 // pointer dereference when methods are called.
 type UnimplementedScheduleScraperServer struct{}
 
-func (UnimplementedScheduleScraperServer) GetMessage(context.Context, *DebugMessage) (*DebugMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMessage not implemented")
+func (UnimplementedScheduleScraperServer) GetScheduleTypes(context.Context, *Empty) (*ScheduleTypes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScheduleTypes not implemented")
+}
+func (UnimplementedScheduleScraperServer) GetUpdateTime(context.Context, *Empty) (*UpdateTime, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUpdateTime not implemented")
+}
+func (UnimplementedScheduleScraperServer) GetScheduleList(context.Context, *ScheduleType) (*ScheduleListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScheduleList not implemented")
+}
+func (UnimplementedScheduleScraperServer) GetAvailableScheduleTimeGroups(context.Context, *Empty) (*AvailableTimeGroups, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableScheduleTimeGroups not implemented")
+}
+func (UnimplementedScheduleScraperServer) GetScheduleFileAsStr(context.Context, *ScheduleFileRequest) (*ScheduleFileContent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetScheduleFileAsStr not implemented")
 }
 func (UnimplementedScheduleScraperServer) mustEmbedUnimplementedScheduleScraperServer() {}
 func (UnimplementedScheduleScraperServer) testEmbeddedByValue()                         {}
@@ -86,20 +150,92 @@ func RegisterScheduleScraperServer(s grpc.ServiceRegistrar, srv ScheduleScraperS
 	s.RegisterService(&ScheduleScraper_ServiceDesc, srv)
 }
 
-func _ScheduleScraper_GetMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DebugMessage)
+func _ScheduleScraper_GetScheduleTypes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ScheduleScraperServer).GetMessage(ctx, in)
+		return srv.(ScheduleScraperServer).GetScheduleTypes(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ScheduleScraper_GetMessage_FullMethodName,
+		FullMethod: ScheduleScraper_GetScheduleTypes_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ScheduleScraperServer).GetMessage(ctx, req.(*DebugMessage))
+		return srv.(ScheduleScraperServer).GetScheduleTypes(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ScheduleScraper_GetUpdateTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleScraperServer).GetUpdateTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ScheduleScraper_GetUpdateTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleScraperServer).GetUpdateTime(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ScheduleScraper_GetScheduleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduleType)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleScraperServer).GetScheduleList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ScheduleScraper_GetScheduleList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleScraperServer).GetScheduleList(ctx, req.(*ScheduleType))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ScheduleScraper_GetAvailableScheduleTimeGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleScraperServer).GetAvailableScheduleTimeGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ScheduleScraper_GetAvailableScheduleTimeGroups_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleScraperServer).GetAvailableScheduleTimeGroups(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ScheduleScraper_GetScheduleFileAsStr_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduleFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleScraperServer).GetScheduleFileAsStr(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ScheduleScraper_GetScheduleFileAsStr_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleScraperServer).GetScheduleFileAsStr(ctx, req.(*ScheduleFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +248,24 @@ var ScheduleScraper_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ScheduleScraperServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetMessage",
-			Handler:    _ScheduleScraper_GetMessage_Handler,
+			MethodName: "getScheduleTypes",
+			Handler:    _ScheduleScraper_GetScheduleTypes_Handler,
+		},
+		{
+			MethodName: "getUpdateTime",
+			Handler:    _ScheduleScraper_GetUpdateTime_Handler,
+		},
+		{
+			MethodName: "getScheduleList",
+			Handler:    _ScheduleScraper_GetScheduleList_Handler,
+		},
+		{
+			MethodName: "getAvailableScheduleTimeGroups",
+			Handler:    _ScheduleScraper_GetAvailableScheduleTimeGroups_Handler,
+		},
+		{
+			MethodName: "getScheduleFileAsStr",
+			Handler:    _ScheduleScraper_GetScheduleFileAsStr_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
