@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.31.1
-// source: protos/definitions.proto
+// source: protos/scraperProto.proto
 
 package protos
 
@@ -32,7 +32,7 @@ const (
 type ScheduleScraperClient interface {
 	GetScheduleTypes(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ScheduleTypes, error)
 	GetUpdateTime(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UpdateTime, error)
-	GetScheduleList(ctx context.Context, in *ScheduleType, opts ...grpc.CallOption) (*ScheduleListResponse, error)
+	GetScheduleList(ctx context.Context, in *ScheduleTypeRequest, opts ...grpc.CallOption) (*ScheduleListResponse, error)
 	GetAvailableScheduleTimeGroups(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*AvailableTimeGroups, error)
 	GetScheduleFileAsStr(ctx context.Context, in *ScheduleFileRequest, opts ...grpc.CallOption) (*ScheduleFileContent, error)
 }
@@ -65,7 +65,7 @@ func (c *scheduleScraperClient) GetUpdateTime(ctx context.Context, in *Empty, op
 	return out, nil
 }
 
-func (c *scheduleScraperClient) GetScheduleList(ctx context.Context, in *ScheduleType, opts ...grpc.CallOption) (*ScheduleListResponse, error) {
+func (c *scheduleScraperClient) GetScheduleList(ctx context.Context, in *ScheduleTypeRequest, opts ...grpc.CallOption) (*ScheduleListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ScheduleListResponse)
 	err := c.cc.Invoke(ctx, ScheduleScraper_GetScheduleList_FullMethodName, in, out, cOpts...)
@@ -101,7 +101,7 @@ func (c *scheduleScraperClient) GetScheduleFileAsStr(ctx context.Context, in *Sc
 type ScheduleScraperServer interface {
 	GetScheduleTypes(context.Context, *Empty) (*ScheduleTypes, error)
 	GetUpdateTime(context.Context, *Empty) (*UpdateTime, error)
-	GetScheduleList(context.Context, *ScheduleType) (*ScheduleListResponse, error)
+	GetScheduleList(context.Context, *ScheduleTypeRequest) (*ScheduleListResponse, error)
 	GetAvailableScheduleTimeGroups(context.Context, *Empty) (*AvailableTimeGroups, error)
 	GetScheduleFileAsStr(context.Context, *ScheduleFileRequest) (*ScheduleFileContent, error)
 	mustEmbedUnimplementedScheduleScraperServer()
@@ -120,7 +120,7 @@ func (UnimplementedScheduleScraperServer) GetScheduleTypes(context.Context, *Emp
 func (UnimplementedScheduleScraperServer) GetUpdateTime(context.Context, *Empty) (*UpdateTime, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUpdateTime not implemented")
 }
-func (UnimplementedScheduleScraperServer) GetScheduleList(context.Context, *ScheduleType) (*ScheduleListResponse, error) {
+func (UnimplementedScheduleScraperServer) GetScheduleList(context.Context, *ScheduleTypeRequest) (*ScheduleListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetScheduleList not implemented")
 }
 func (UnimplementedScheduleScraperServer) GetAvailableScheduleTimeGroups(context.Context, *Empty) (*AvailableTimeGroups, error) {
@@ -187,7 +187,7 @@ func _ScheduleScraper_GetUpdateTime_Handler(srv interface{}, ctx context.Context
 }
 
 func _ScheduleScraper_GetScheduleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ScheduleType)
+	in := new(ScheduleTypeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func _ScheduleScraper_GetScheduleList_Handler(srv interface{}, ctx context.Conte
 		FullMethod: ScheduleScraper_GetScheduleList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ScheduleScraperServer).GetScheduleList(ctx, req.(*ScheduleType))
+		return srv.(ScheduleScraperServer).GetScheduleList(ctx, req.(*ScheduleTypeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -269,5 +269,5 @@ var ScheduleScraper_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "protos/definitions.proto",
+	Metadata: "protos/scraperProto.proto",
 }

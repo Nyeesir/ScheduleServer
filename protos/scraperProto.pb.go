@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.31.1
-// source: protos/definitions.proto
+// source: protos/scraperProto.proto
 
 package protos
 
@@ -29,7 +29,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_protos_definitions_proto_msgTypes[0]
+	mi := &file_protos_scraperProto_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +41,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[0]
+	mi := &file_protos_scraperProto_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +54,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{0}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{0}
 }
 
 type ScheduleTypes struct {
@@ -66,7 +66,7 @@ type ScheduleTypes struct {
 
 func (x *ScheduleTypes) Reset() {
 	*x = ScheduleTypes{}
-	mi := &file_protos_definitions_proto_msgTypes[1]
+	mi := &file_protos_scraperProto_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -78,7 +78,7 @@ func (x *ScheduleTypes) String() string {
 func (*ScheduleTypes) ProtoMessage() {}
 
 func (x *ScheduleTypes) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[1]
+	mi := &file_protos_scraperProto_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -91,7 +91,7 @@ func (x *ScheduleTypes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleTypes.ProtoReflect.Descriptor instead.
 func (*ScheduleTypes) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{1}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ScheduleTypes) GetScheduleTypes() []*ScheduleTypes_ScheduleType {
@@ -110,7 +110,7 @@ type UpdateTime struct {
 
 func (x *UpdateTime) Reset() {
 	*x = UpdateTime{}
-	mi := &file_protos_definitions_proto_msgTypes[2]
+	mi := &file_protos_scraperProto_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -122,7 +122,7 @@ func (x *UpdateTime) String() string {
 func (*UpdateTime) ProtoMessage() {}
 
 func (x *UpdateTime) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[2]
+	mi := &file_protos_scraperProto_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -135,7 +135,7 @@ func (x *UpdateTime) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTime.ProtoReflect.Descriptor instead.
 func (*UpdateTime) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{2}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UpdateTime) GetTime() float32 {
@@ -145,28 +145,28 @@ func (x *UpdateTime) GetTime() float32 {
 	return 0
 }
 
-type ScheduleType struct {
+type ScheduleTypeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          int32                  `protobuf:"varint,1,opt,name=type,proto3" json:"type,omitempty"`
+	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ScheduleType) Reset() {
-	*x = ScheduleType{}
-	mi := &file_protos_definitions_proto_msgTypes[3]
+func (x *ScheduleTypeRequest) Reset() {
+	*x = ScheduleTypeRequest{}
+	mi := &file_protos_scraperProto_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ScheduleType) String() string {
+func (x *ScheduleTypeRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ScheduleType) ProtoMessage() {}
+func (*ScheduleTypeRequest) ProtoMessage() {}
 
-func (x *ScheduleType) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[3]
+func (x *ScheduleTypeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_scraperProto_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,16 +177,16 @@ func (x *ScheduleType) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ScheduleType.ProtoReflect.Descriptor instead.
-func (*ScheduleType) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{3}
+// Deprecated: Use ScheduleTypeRequest.ProtoReflect.Descriptor instead.
+func (*ScheduleTypeRequest) Descriptor() ([]byte, []int) {
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ScheduleType) GetType() int32 {
+func (x *ScheduleTypeRequest) GetType() string {
 	if x != nil {
 		return x.Type
 	}
-	return 0
+	return ""
 }
 
 type ScheduleListResponse struct {
@@ -198,7 +198,7 @@ type ScheduleListResponse struct {
 
 func (x *ScheduleListResponse) Reset() {
 	*x = ScheduleListResponse{}
-	mi := &file_protos_definitions_proto_msgTypes[4]
+	mi := &file_protos_scraperProto_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -210,7 +210,7 @@ func (x *ScheduleListResponse) String() string {
 func (*ScheduleListResponse) ProtoMessage() {}
 
 func (x *ScheduleListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[4]
+	mi := &file_protos_scraperProto_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -223,7 +223,7 @@ func (x *ScheduleListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleListResponse.ProtoReflect.Descriptor instead.
 func (*ScheduleListResponse) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{4}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ScheduleListResponse) GetItems() []*ScheduleItem {
@@ -246,7 +246,7 @@ type ScheduleItem struct {
 
 func (x *ScheduleItem) Reset() {
 	*x = ScheduleItem{}
-	mi := &file_protos_definitions_proto_msgTypes[5]
+	mi := &file_protos_scraperProto_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -258,7 +258,7 @@ func (x *ScheduleItem) String() string {
 func (*ScheduleItem) ProtoMessage() {}
 
 func (x *ScheduleItem) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[5]
+	mi := &file_protos_scraperProto_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +271,7 @@ func (x *ScheduleItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleItem.ProtoReflect.Descriptor instead.
 func (*ScheduleItem) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{5}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ScheduleItem) GetName() string {
@@ -319,7 +319,7 @@ type AvailableTimeGroups struct {
 
 func (x *AvailableTimeGroups) Reset() {
 	*x = AvailableTimeGroups{}
-	mi := &file_protos_definitions_proto_msgTypes[6]
+	mi := &file_protos_scraperProto_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -331,7 +331,7 @@ func (x *AvailableTimeGroups) String() string {
 func (*AvailableTimeGroups) ProtoMessage() {}
 
 func (x *AvailableTimeGroups) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[6]
+	mi := &file_protos_scraperProto_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -344,7 +344,7 @@ func (x *AvailableTimeGroups) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AvailableTimeGroups.ProtoReflect.Descriptor instead.
 func (*AvailableTimeGroups) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{6}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AvailableTimeGroups) GetPeriod() []*TimeGroup {
@@ -371,7 +371,7 @@ type TimeGroup struct {
 
 func (x *TimeGroup) Reset() {
 	*x = TimeGroup{}
-	mi := &file_protos_definitions_proto_msgTypes[7]
+	mi := &file_protos_scraperProto_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -383,7 +383,7 @@ func (x *TimeGroup) String() string {
 func (*TimeGroup) ProtoMessage() {}
 
 func (x *TimeGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[7]
+	mi := &file_protos_scraperProto_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -396,7 +396,7 @@ func (x *TimeGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TimeGroup.ProtoReflect.Descriptor instead.
 func (*TimeGroup) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{7}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *TimeGroup) GetName() string {
@@ -415,16 +415,16 @@ func (x *TimeGroup) GetId() string {
 
 type ScheduleFileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	SchedType     int32                  `protobuf:"varint,1,opt,name=schedType,proto3" json:"schedType,omitempty"`
-	SchedId       int32                  `protobuf:"varint,2,opt,name=schedId,proto3" json:"schedId,omitempty"`
-	TimeGroup     int32                  `protobuf:"varint,3,opt,name=timeGroup,proto3" json:"timeGroup,omitempty"`
+	SchedType     string                 `protobuf:"bytes,1,opt,name=schedType,proto3" json:"schedType,omitempty"`
+	SchedId       string                 `protobuf:"bytes,2,opt,name=schedId,proto3" json:"schedId,omitempty"`
+	TimeGroup     string                 `protobuf:"bytes,3,opt,name=timeGroup,proto3" json:"timeGroup,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ScheduleFileRequest) Reset() {
 	*x = ScheduleFileRequest{}
-	mi := &file_protos_definitions_proto_msgTypes[8]
+	mi := &file_protos_scraperProto_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -436,7 +436,7 @@ func (x *ScheduleFileRequest) String() string {
 func (*ScheduleFileRequest) ProtoMessage() {}
 
 func (x *ScheduleFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[8]
+	mi := &file_protos_scraperProto_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -449,28 +449,28 @@ func (x *ScheduleFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleFileRequest.ProtoReflect.Descriptor instead.
 func (*ScheduleFileRequest) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{8}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *ScheduleFileRequest) GetSchedType() int32 {
+func (x *ScheduleFileRequest) GetSchedType() string {
 	if x != nil {
 		return x.SchedType
 	}
-	return 0
+	return ""
 }
 
-func (x *ScheduleFileRequest) GetSchedId() int32 {
+func (x *ScheduleFileRequest) GetSchedId() string {
 	if x != nil {
 		return x.SchedId
 	}
-	return 0
+	return ""
 }
 
-func (x *ScheduleFileRequest) GetTimeGroup() int32 {
+func (x *ScheduleFileRequest) GetTimeGroup() string {
 	if x != nil {
 		return x.TimeGroup
 	}
-	return 0
+	return ""
 }
 
 type ScheduleFileContent struct {
@@ -482,7 +482,7 @@ type ScheduleFileContent struct {
 
 func (x *ScheduleFileContent) Reset() {
 	*x = ScheduleFileContent{}
-	mi := &file_protos_definitions_proto_msgTypes[9]
+	mi := &file_protos_scraperProto_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -494,7 +494,7 @@ func (x *ScheduleFileContent) String() string {
 func (*ScheduleFileContent) ProtoMessage() {}
 
 func (x *ScheduleFileContent) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[9]
+	mi := &file_protos_scraperProto_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -507,7 +507,7 @@ func (x *ScheduleFileContent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleFileContent.ProtoReflect.Descriptor instead.
 func (*ScheduleFileContent) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{9}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ScheduleFileContent) GetContent() string {
@@ -527,7 +527,7 @@ type ScheduleTypes_ScheduleType struct {
 
 func (x *ScheduleTypes_ScheduleType) Reset() {
 	*x = ScheduleTypes_ScheduleType{}
-	mi := &file_protos_definitions_proto_msgTypes[10]
+	mi := &file_protos_scraperProto_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -539,7 +539,7 @@ func (x *ScheduleTypes_ScheduleType) String() string {
 func (*ScheduleTypes_ScheduleType) ProtoMessage() {}
 
 func (x *ScheduleTypes_ScheduleType) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_definitions_proto_msgTypes[10]
+	mi := &file_protos_scraperProto_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -552,7 +552,7 @@ func (x *ScheduleTypes_ScheduleType) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleTypes_ScheduleType.ProtoReflect.Descriptor instead.
 func (*ScheduleTypes_ScheduleType) Descriptor() ([]byte, []int) {
-	return file_protos_definitions_proto_rawDescGZIP(), []int{1, 0}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{1, 0}
 }
 
 func (x *ScheduleTypes_ScheduleType) GetScheduleTypeName() string {
@@ -569,11 +569,11 @@ func (x *ScheduleTypes_ScheduleType) GetScheduleTpeId() string {
 	return ""
 }
 
-var File_protos_definitions_proto protoreflect.FileDescriptor
+var File_protos_scraperProto_proto protoreflect.FileDescriptor
 
-const file_protos_definitions_proto_rawDesc = "" +
+const file_protos_scraperProto_proto_rawDesc = "" +
 	"\n" +
-	"\x18protos/definitions.proto\"\a\n" +
+	"\x19protos/scraperProto.proto\"\a\n" +
 	"\x05Empty\"\xb4\x01\n" +
 	"\rScheduleTypes\x12A\n" +
 	"\rscheduleTypes\x18\x01 \x03(\v2\x1b.ScheduleTypes.ScheduleTypeR\rscheduleTypes\x1a`\n" +
@@ -582,9 +582,9 @@ const file_protos_definitions_proto_rawDesc = "" +
 	"\rscheduleTpeId\x18\x02 \x01(\tR\rscheduleTpeId\" \n" +
 	"\n" +
 	"UpdateTime\x12\x12\n" +
-	"\x04time\x18\x01 \x01(\x02R\x04time\"\"\n" +
-	"\fscheduleType\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\x05R\x04type\";\n" +
+	"\x04time\x18\x01 \x01(\x02R\x04time\")\n" +
+	"\x13scheduleTypeRequest\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\";\n" +
 	"\x14ScheduleListResponse\x12#\n" +
 	"\x05items\x18\x01 \x03(\v2\r.ScheduleItemR\x05items\"\x93\x01\n" +
 	"\fScheduleItem\x12\x12\n" +
@@ -602,36 +602,36 @@ const file_protos_definitions_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\"k\n" +
 	"\x13ScheduleFileRequest\x12\x1c\n" +
-	"\tschedType\x18\x01 \x01(\x05R\tschedType\x12\x18\n" +
-	"\aschedId\x18\x02 \x01(\x05R\aschedId\x12\x1c\n" +
-	"\ttimeGroup\x18\x03 \x01(\x05R\ttimeGroup\"/\n" +
+	"\tschedType\x18\x01 \x01(\tR\tschedType\x12\x18\n" +
+	"\aschedId\x18\x02 \x01(\tR\aschedId\x12\x1c\n" +
+	"\ttimeGroup\x18\x03 \x01(\tR\ttimeGroup\"/\n" +
 	"\x13ScheduleFileContent\x12\x18\n" +
-	"\acontent\x18\x01 \x01(\tR\acontent2\xa0\x02\n" +
+	"\acontent\x18\x01 \x01(\tR\acontent2\xa7\x02\n" +
 	"\x0fScheduleScraper\x12*\n" +
 	"\x10getScheduleTypes\x12\x06.Empty\x1a\x0e.ScheduleTypes\x12$\n" +
-	"\rgetUpdateTime\x12\x06.Empty\x1a\v.UpdateTime\x127\n" +
-	"\x0fgetScheduleList\x12\r.scheduleType\x1a\x15.ScheduleListResponse\x12>\n" +
+	"\rgetUpdateTime\x12\x06.Empty\x1a\v.UpdateTime\x12>\n" +
+	"\x0fgetScheduleList\x12\x14.scheduleTypeRequest\x1a\x15.ScheduleListResponse\x12>\n" +
 	"\x1egetAvailableScheduleTimeGroups\x12\x06.Empty\x1a\x14.AvailableTimeGroups\x12B\n" +
 	"\x14getScheduleFileAsStr\x12\x14.ScheduleFileRequest\x1a\x14.ScheduleFileContentB\x1bZ\x19go_schedule_server/protosb\x06proto3"
 
 var (
-	file_protos_definitions_proto_rawDescOnce sync.Once
-	file_protos_definitions_proto_rawDescData []byte
+	file_protos_scraperProto_proto_rawDescOnce sync.Once
+	file_protos_scraperProto_proto_rawDescData []byte
 )
 
-func file_protos_definitions_proto_rawDescGZIP() []byte {
-	file_protos_definitions_proto_rawDescOnce.Do(func() {
-		file_protos_definitions_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_protos_definitions_proto_rawDesc), len(file_protos_definitions_proto_rawDesc)))
+func file_protos_scraperProto_proto_rawDescGZIP() []byte {
+	file_protos_scraperProto_proto_rawDescOnce.Do(func() {
+		file_protos_scraperProto_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_protos_scraperProto_proto_rawDesc), len(file_protos_scraperProto_proto_rawDesc)))
 	})
-	return file_protos_definitions_proto_rawDescData
+	return file_protos_scraperProto_proto_rawDescData
 }
 
-var file_protos_definitions_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
-var file_protos_definitions_proto_goTypes = []any{
+var file_protos_scraperProto_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_protos_scraperProto_proto_goTypes = []any{
 	(*Empty)(nil),                      // 0: Empty
 	(*ScheduleTypes)(nil),              // 1: ScheduleTypes
 	(*UpdateTime)(nil),                 // 2: UpdateTime
-	(*ScheduleType)(nil),               // 3: scheduleType
+	(*ScheduleTypeRequest)(nil),        // 3: scheduleTypeRequest
 	(*ScheduleListResponse)(nil),       // 4: ScheduleListResponse
 	(*ScheduleItem)(nil),               // 5: ScheduleItem
 	(*AvailableTimeGroups)(nil),        // 6: AvailableTimeGroups
@@ -640,7 +640,7 @@ var file_protos_definitions_proto_goTypes = []any{
 	(*ScheduleFileContent)(nil),        // 9: ScheduleFileContent
 	(*ScheduleTypes_ScheduleType)(nil), // 10: ScheduleTypes.ScheduleType
 }
-var file_protos_definitions_proto_depIdxs = []int32{
+var file_protos_scraperProto_proto_depIdxs = []int32{
 	10, // 0: ScheduleTypes.scheduleTypes:type_name -> ScheduleTypes.ScheduleType
 	5,  // 1: ScheduleListResponse.items:type_name -> ScheduleItem
 	5,  // 2: ScheduleItem.children:type_name -> ScheduleItem
@@ -648,7 +648,7 @@ var file_protos_definitions_proto_depIdxs = []int32{
 	7,  // 4: AvailableTimeGroups.weeks:type_name -> TimeGroup
 	0,  // 5: ScheduleScraper.getScheduleTypes:input_type -> Empty
 	0,  // 6: ScheduleScraper.getUpdateTime:input_type -> Empty
-	3,  // 7: ScheduleScraper.getScheduleList:input_type -> scheduleType
+	3,  // 7: ScheduleScraper.getScheduleList:input_type -> scheduleTypeRequest
 	0,  // 8: ScheduleScraper.getAvailableScheduleTimeGroups:input_type -> Empty
 	8,  // 9: ScheduleScraper.getScheduleFileAsStr:input_type -> ScheduleFileRequest
 	1,  // 10: ScheduleScraper.getScheduleTypes:output_type -> ScheduleTypes
@@ -663,26 +663,26 @@ var file_protos_definitions_proto_depIdxs = []int32{
 	0,  // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_protos_definitions_proto_init() }
-func file_protos_definitions_proto_init() {
-	if File_protos_definitions_proto != nil {
+func init() { file_protos_scraperProto_proto_init() }
+func file_protos_scraperProto_proto_init() {
+	if File_protos_scraperProto_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protos_definitions_proto_rawDesc), len(file_protos_definitions_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_protos_scraperProto_proto_rawDesc), len(file_protos_scraperProto_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_protos_definitions_proto_goTypes,
-		DependencyIndexes: file_protos_definitions_proto_depIdxs,
-		MessageInfos:      file_protos_definitions_proto_msgTypes,
+		GoTypes:           file_protos_scraperProto_proto_goTypes,
+		DependencyIndexes: file_protos_scraperProto_proto_depIdxs,
+		MessageInfos:      file_protos_scraperProto_proto_msgTypes,
 	}.Build()
-	File_protos_definitions_proto = out.File
-	file_protos_definitions_proto_goTypes = nil
-	file_protos_definitions_proto_depIdxs = nil
+	File_protos_scraperProto_proto = out.File
+	file_protos_scraperProto_proto_goTypes = nil
+	file_protos_scraperProto_proto_depIdxs = nil
 }
