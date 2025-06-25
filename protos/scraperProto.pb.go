@@ -310,9 +310,9 @@ func (x *ScheduleItem) GetChildren() []*ScheduleItem {
 }
 
 type AvailableTimeGroups struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Period        []*TimeGroup           `protobuf:"bytes,1,rep,name=period,proto3" json:"period,omitempty"`
-	Weeks         []*TimeGroup           `protobuf:"bytes,2,rep,name=weeks,proto3" json:"weeks,omitempty"`
+	state         protoimpl.MessageState           `protogen:"open.v1"`
+	Periods       []*AvailableTimeGroups_TimeGroup `protobuf:"bytes,1,rep,name=periods,proto3" json:"periods,omitempty"`
+	Weeks         []*AvailableTimeGroups_TimeGroup `protobuf:"bytes,2,rep,name=weeks,proto3" json:"weeks,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -347,70 +347,18 @@ func (*AvailableTimeGroups) Descriptor() ([]byte, []int) {
 	return file_protos_scraperProto_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AvailableTimeGroups) GetPeriod() []*TimeGroup {
+func (x *AvailableTimeGroups) GetPeriods() []*AvailableTimeGroups_TimeGroup {
 	if x != nil {
-		return x.Period
+		return x.Periods
 	}
 	return nil
 }
 
-func (x *AvailableTimeGroups) GetWeeks() []*TimeGroup {
+func (x *AvailableTimeGroups) GetWeeks() []*AvailableTimeGroups_TimeGroup {
 	if x != nil {
 		return x.Weeks
 	}
 	return nil
-}
-
-type TimeGroup struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TimeGroup) Reset() {
-	*x = TimeGroup{}
-	mi := &file_protos_scraperProto_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TimeGroup) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TimeGroup) ProtoMessage() {}
-
-func (x *TimeGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_scraperProto_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TimeGroup.ProtoReflect.Descriptor instead.
-func (*TimeGroup) Descriptor() ([]byte, []int) {
-	return file_protos_scraperProto_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *TimeGroup) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *TimeGroup) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 type ScheduleFileRequest struct {
@@ -424,7 +372,7 @@ type ScheduleFileRequest struct {
 
 func (x *ScheduleFileRequest) Reset() {
 	*x = ScheduleFileRequest{}
-	mi := &file_protos_scraperProto_proto_msgTypes[8]
+	mi := &file_protos_scraperProto_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -436,7 +384,7 @@ func (x *ScheduleFileRequest) String() string {
 func (*ScheduleFileRequest) ProtoMessage() {}
 
 func (x *ScheduleFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_scraperProto_proto_msgTypes[8]
+	mi := &file_protos_scraperProto_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -449,7 +397,7 @@ func (x *ScheduleFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleFileRequest.ProtoReflect.Descriptor instead.
 func (*ScheduleFileRequest) Descriptor() ([]byte, []int) {
-	return file_protos_scraperProto_proto_rawDescGZIP(), []int{8}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ScheduleFileRequest) GetSchedType() string {
@@ -482,7 +430,7 @@ type ScheduleFileContent struct {
 
 func (x *ScheduleFileContent) Reset() {
 	*x = ScheduleFileContent{}
-	mi := &file_protos_scraperProto_proto_msgTypes[9]
+	mi := &file_protos_scraperProto_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -494,7 +442,7 @@ func (x *ScheduleFileContent) String() string {
 func (*ScheduleFileContent) ProtoMessage() {}
 
 func (x *ScheduleFileContent) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_scraperProto_proto_msgTypes[9]
+	mi := &file_protos_scraperProto_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -507,7 +455,7 @@ func (x *ScheduleFileContent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ScheduleFileContent.ProtoReflect.Descriptor instead.
 func (*ScheduleFileContent) Descriptor() ([]byte, []int) {
-	return file_protos_scraperProto_proto_rawDescGZIP(), []int{9}
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ScheduleFileContent) GetContent() string {
@@ -527,7 +475,7 @@ type ScheduleTypes_ScheduleType struct {
 
 func (x *ScheduleTypes_ScheduleType) Reset() {
 	*x = ScheduleTypes_ScheduleType{}
-	mi := &file_protos_scraperProto_proto_msgTypes[10]
+	mi := &file_protos_scraperProto_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -539,7 +487,7 @@ func (x *ScheduleTypes_ScheduleType) String() string {
 func (*ScheduleTypes_ScheduleType) ProtoMessage() {}
 
 func (x *ScheduleTypes_ScheduleType) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_scraperProto_proto_msgTypes[10]
+	mi := &file_protos_scraperProto_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -569,6 +517,58 @@ func (x *ScheduleTypes_ScheduleType) GetScheduleTpeId() string {
 	return ""
 }
 
+type AvailableTimeGroups_TimeGroup struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Id            string                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AvailableTimeGroups_TimeGroup) Reset() {
+	*x = AvailableTimeGroups_TimeGroup{}
+	mi := &file_protos_scraperProto_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvailableTimeGroups_TimeGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvailableTimeGroups_TimeGroup) ProtoMessage() {}
+
+func (x *AvailableTimeGroups_TimeGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_scraperProto_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvailableTimeGroups_TimeGroup.ProtoReflect.Descriptor instead.
+func (*AvailableTimeGroups_TimeGroup) Descriptor() ([]byte, []int) {
+	return file_protos_scraperProto_proto_rawDescGZIP(), []int{6, 0}
+}
+
+func (x *AvailableTimeGroups_TimeGroup) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AvailableTimeGroups_TimeGroup) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 var File_protos_scraperProto_proto protoreflect.FileDescriptor
 
 const file_protos_scraperProto_proto_rawDesc = "" +
@@ -583,7 +583,7 @@ const file_protos_scraperProto_proto_rawDesc = "" +
 	"\n" +
 	"UpdateTime\x12\x12\n" +
 	"\x04time\x18\x01 \x01(\x02R\x04time\")\n" +
-	"\x13scheduleTypeRequest\x12\x12\n" +
+	"\x13ScheduleTypeRequest\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\";\n" +
 	"\x14ScheduleListResponse\x12#\n" +
 	"\x05items\x18\x01 \x03(\v2\r.ScheduleItemR\x05items\"\x93\x01\n" +
@@ -592,12 +592,10 @@ const file_protos_scraperProto_proto_rawDesc = "" +
 	"\x02id\x18\x02 \x01(\tR\x02id\x12\x12\n" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12 \n" +
 	"\vhasSchedule\x18\x04 \x01(\bR\vhasSchedule\x12)\n" +
-	"\bchildren\x18\x05 \x03(\v2\r.ScheduleItemR\bchildren\"[\n" +
-	"\x13AvailableTimeGroups\x12\"\n" +
-	"\x06period\x18\x01 \x03(\v2\n" +
-	".TimeGroupR\x06period\x12 \n" +
-	"\x05weeks\x18\x02 \x03(\v2\n" +
-	".TimeGroupR\x05weeks\"/\n" +
+	"\bchildren\x18\x05 \x03(\v2\r.ScheduleItemR\bchildren\"\xb6\x01\n" +
+	"\x13AvailableTimeGroups\x128\n" +
+	"\aperiods\x18\x01 \x03(\v2\x1e.AvailableTimeGroups.TimeGroupR\aperiods\x124\n" +
+	"\x05weeks\x18\x02 \x03(\v2\x1e.AvailableTimeGroups.TimeGroupR\x05weeks\x1a/\n" +
 	"\tTimeGroup\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\tR\x02id\"k\n" +
@@ -610,7 +608,7 @@ const file_protos_scraperProto_proto_rawDesc = "" +
 	"\x0fScheduleScraper\x12*\n" +
 	"\x10getScheduleTypes\x12\x06.Empty\x1a\x0e.ScheduleTypes\x12$\n" +
 	"\rgetUpdateTime\x12\x06.Empty\x1a\v.UpdateTime\x12>\n" +
-	"\x0fgetScheduleList\x12\x14.scheduleTypeRequest\x1a\x15.ScheduleListResponse\x12>\n" +
+	"\x0fgetScheduleList\x12\x14.ScheduleTypeRequest\x1a\x15.ScheduleListResponse\x12>\n" +
 	"\x1egetAvailableScheduleTimeGroups\x12\x06.Empty\x1a\x14.AvailableTimeGroups\x12B\n" +
 	"\x14getScheduleFileAsStr\x12\x14.ScheduleFileRequest\x1a\x14.ScheduleFileContentB\x1bZ\x19go_schedule_server/protosb\x06proto3"
 
@@ -628,34 +626,34 @@ func file_protos_scraperProto_proto_rawDescGZIP() []byte {
 
 var file_protos_scraperProto_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_protos_scraperProto_proto_goTypes = []any{
-	(*Empty)(nil),                      // 0: Empty
-	(*ScheduleTypes)(nil),              // 1: ScheduleTypes
-	(*UpdateTime)(nil),                 // 2: UpdateTime
-	(*ScheduleTypeRequest)(nil),        // 3: scheduleTypeRequest
-	(*ScheduleListResponse)(nil),       // 4: ScheduleListResponse
-	(*ScheduleItem)(nil),               // 5: ScheduleItem
-	(*AvailableTimeGroups)(nil),        // 6: AvailableTimeGroups
-	(*TimeGroup)(nil),                  // 7: TimeGroup
-	(*ScheduleFileRequest)(nil),        // 8: ScheduleFileRequest
-	(*ScheduleFileContent)(nil),        // 9: ScheduleFileContent
-	(*ScheduleTypes_ScheduleType)(nil), // 10: ScheduleTypes.ScheduleType
+	(*Empty)(nil),                         // 0: Empty
+	(*ScheduleTypes)(nil),                 // 1: ScheduleTypes
+	(*UpdateTime)(nil),                    // 2: UpdateTime
+	(*ScheduleTypeRequest)(nil),           // 3: ScheduleTypeRequest
+	(*ScheduleListResponse)(nil),          // 4: ScheduleListResponse
+	(*ScheduleItem)(nil),                  // 5: ScheduleItem
+	(*AvailableTimeGroups)(nil),           // 6: AvailableTimeGroups
+	(*ScheduleFileRequest)(nil),           // 7: ScheduleFileRequest
+	(*ScheduleFileContent)(nil),           // 8: ScheduleFileContent
+	(*ScheduleTypes_ScheduleType)(nil),    // 9: ScheduleTypes.ScheduleType
+	(*AvailableTimeGroups_TimeGroup)(nil), // 10: AvailableTimeGroups.TimeGroup
 }
 var file_protos_scraperProto_proto_depIdxs = []int32{
-	10, // 0: ScheduleTypes.scheduleTypes:type_name -> ScheduleTypes.ScheduleType
+	9,  // 0: ScheduleTypes.scheduleTypes:type_name -> ScheduleTypes.ScheduleType
 	5,  // 1: ScheduleListResponse.items:type_name -> ScheduleItem
 	5,  // 2: ScheduleItem.children:type_name -> ScheduleItem
-	7,  // 3: AvailableTimeGroups.period:type_name -> TimeGroup
-	7,  // 4: AvailableTimeGroups.weeks:type_name -> TimeGroup
+	10, // 3: AvailableTimeGroups.periods:type_name -> AvailableTimeGroups.TimeGroup
+	10, // 4: AvailableTimeGroups.weeks:type_name -> AvailableTimeGroups.TimeGroup
 	0,  // 5: ScheduleScraper.getScheduleTypes:input_type -> Empty
 	0,  // 6: ScheduleScraper.getUpdateTime:input_type -> Empty
-	3,  // 7: ScheduleScraper.getScheduleList:input_type -> scheduleTypeRequest
+	3,  // 7: ScheduleScraper.getScheduleList:input_type -> ScheduleTypeRequest
 	0,  // 8: ScheduleScraper.getAvailableScheduleTimeGroups:input_type -> Empty
-	8,  // 9: ScheduleScraper.getScheduleFileAsStr:input_type -> ScheduleFileRequest
+	7,  // 9: ScheduleScraper.getScheduleFileAsStr:input_type -> ScheduleFileRequest
 	1,  // 10: ScheduleScraper.getScheduleTypes:output_type -> ScheduleTypes
 	2,  // 11: ScheduleScraper.getUpdateTime:output_type -> UpdateTime
 	4,  // 12: ScheduleScraper.getScheduleList:output_type -> ScheduleListResponse
 	6,  // 13: ScheduleScraper.getAvailableScheduleTimeGroups:output_type -> AvailableTimeGroups
-	9,  // 14: ScheduleScraper.getScheduleFileAsStr:output_type -> ScheduleFileContent
+	8,  // 14: ScheduleScraper.getScheduleFileAsStr:output_type -> ScheduleFileContent
 	10, // [10:15] is the sub-list for method output_type
 	5,  // [5:10] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name

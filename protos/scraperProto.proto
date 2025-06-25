@@ -4,7 +4,7 @@ option go_package = "go_schedule_server/protos";
 service ScheduleScraper {
   rpc getScheduleTypes(Empty) returns (ScheduleTypes);
   rpc getUpdateTime(Empty) returns (UpdateTime);
-  rpc getScheduleList (scheduleTypeRequest) returns (ScheduleListResponse);
+  rpc getScheduleList (ScheduleTypeRequest) returns (ScheduleListResponse);
   rpc getAvailableScheduleTimeGroups (Empty) returns (AvailableTimeGroups);
   rpc getScheduleFileAsStr (ScheduleFileRequest) returns (ScheduleFileContent);
 }
@@ -24,7 +24,7 @@ message UpdateTime {
   float time = 1;
 }
 
-message scheduleTypeRequest {
+message ScheduleTypeRequest {
   string type = 1;
 }
 
@@ -41,13 +41,13 @@ message ScheduleItem {
 }
 
 message AvailableTimeGroups {
-  repeated TimeGroup period = 1;
+  repeated TimeGroup periods = 1;
   repeated TimeGroup weeks = 2;
-}
 
-message TimeGroup {
-  string name = 1;
-  string id = 2;
+  message TimeGroup {
+    string name = 1;
+    string id = 2;
+  }
 }
 
 message ScheduleFileRequest {

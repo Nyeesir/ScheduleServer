@@ -10,13 +10,15 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
+//TODO: BETTER ERROR HANDLING, CONFIGURATION FILES
+
 var grpcConn *grpc.ClientConn
 var grpcClient pb.ScheduleScraperClient
-
-var someMessage string = "Asd"
+var schedulesTypes pb.ScheduleTypes
 
 var (
 	addr = flag.String("addr", "localhost:50051", "the address to connect to")
@@ -78,10 +80,80 @@ func getUpdateTimeHandler(w http.ResponseWriter, r *http.Request) {
 	jsonEcoder.Encode(map[string]string{"time": updateTime})
 }
 
+func getAvaibleScheduleTimeGroupsHandler(w http.ResponseWriter, r *http.Request) {
+	jsonEcoder := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "application/json")
+	message := MessageTemplate{Error: false}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := grpcClient.GetAvailableScheduleTimeGroups(ctx, &pb.Empty{})
+	if err != nil {
+		message.Error = true
+		message.Message = "Could not get to the scraper"
+		w.WriteHeader(http.StatusInternalServerError)
+		jsonEcoder.Encode(message)
+		return
+	}
+
+	jsonEcoder.Encode(req)
+}
+
+func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
+	jsonEcoder := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "application/json")
+	message := MessageTemplate{Error: false}
+
+	reqType := strings.ToLower(r.URL.Query().Get("type"))
+	reqId := strings.ToLower(r.URL.Query().Get("id"))
+	reqTimeGroup := strings.ToLower(r.URL.Query().Get("time-group"))
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := grpcClient.GetScheduleFileAsStr(ctx, &pb.ScheduleFileRequest{SchedType: reqType, SchedId: reqId, TimeGroup: reqTimeGroup})
+	if err != nil {
+		message.Error = true
+		message.Message = "Could not get to the scraper"
+		w.WriteHeader(http.StatusInternalServerError)
+		jsonEcoder.Encode(message)
+		return
+	}
+	//TODO: CONVERSION TO JSON
+
+	jsonEcoder.Encode(req)
+}
+
+func getScheduleListHandler(w http.ResponseWriter, r *http.Request) {
+	jsonEcoder := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "application/json")
+	message := MessageTemplate{Error: false}
+
+	reqType := strings.ToLower(r.URL.Query().Get("type"))
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := grpcClient.GetScheduleList(ctx, &pb.ScheduleTypeRequest{Type: reqType})
+	if err != nil {
+		message.Error = true
+		message.Message = "Could not get to the scraper"
+		w.WriteHeader(http.StatusInternalServerError)
+		jsonEcoder.Encode(message)
+		return
+	}
+
+	jsonEcoder.Encode(req)
+}
+
 func main() {
 	createGrpcConnection()
 	defer grpcConn.Close()
 	http.HandleFunc("GET /scheduleTypes", getScheduleTypeshandler)
 	http.HandleFunc("GET /updateTime", getUpdateTimeHandler)
+	http.HandleFunc("GET /avaibleScheduleTimeGroups", getAvaibleScheduleTimeGroupsHandler)
+	http.HandleFunc("GET /schedule", getScheduleHandler)
+	http.HandleFunc("GET /scheduleList", getScheduleListHandler)
 	http.ListenAndServe(":8080", nil)
 }
