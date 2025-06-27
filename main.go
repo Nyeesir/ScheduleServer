@@ -3,41 +3,19 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"flag"
-	"fmt"
-	"go_schedule_server/icsProcessing"
+	"go_schedule_server/cache"
+	"go_schedule_server/grpcConnection"
 	pb "go_schedule_server/protos"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 )
 
-//TODO: BETTER ERROR HANDLING, CONFIGURATION FILES
-
-var grpcConn *grpc.ClientConn
-var GrpcClient pb.ScheduleScraperClient
-
-var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
-)
+//TODO: BETTER ERROR HANDLING, CONFIGURATION FILES, LOGGING, SECURING CONNECTION
 
 type MessageTemplate struct {
 	Message string `json:"message"`
 	Error   bool   `json:"error"`
-}
-
-func createGrpcConnection() {
-	flag.Parse()
-	var err error
-	grpcConn, err = grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create scrapper connection: %v\n", err)
-		os.Exit(1)
-	}
-	GrpcClient = pb.NewScheduleScraperClient(grpcConn)
 }
 
 func getScheduleTypeshandler(w http.ResponseWriter, r *http.Request) {
@@ -45,27 +23,16 @@ func getScheduleTypeshandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	message := MessageTemplate{Error: false}
 
-	//print("checking if cache is valid")
-	//if cache.CachedScheduleTypes.ScheduleTypes.ScheduleTypes != nil && cache.CachedScheduleTypes.UpdateTimeStamp == cache.GetUpdateTime() {
-	//	print("cache is valid")
-	//	jsonEcoder.Encode(cache.CachedScheduleTypes.ScheduleTypes)
-	//	return
-	//}
-
-	print("cache is not valid")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	req, err := GrpcClient.GetScheduleTypes(ctx, &pb.Empty{})
+	types, err := cache.GetScheduleTypes(r.Context())
 	if err != nil {
 		message.Error = true
-		message.Message = "Could not get to the scraper"
+		message.Message = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonEcoder.Encode(message)
 		return
 	}
 
-	jsonEcoder.Encode(req)
+	jsonEcoder.Encode(types)
 }
 
 func getUpdateTimeHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +43,7 @@ func getUpdateTimeHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	req, err := GrpcClient.GetUpdateTime(ctx, &pb.Empty{})
+	req, err := grpcConnection.GrpcClient.GetUpdateTime(ctx, &pb.Empty{})
 	if err != nil {
 		message.Error = true
 		message.Message = "Could not get to the scraper"
@@ -93,19 +60,16 @@ func getAvaibleScheduleTimeGroupsHandler(w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Content-Type", "application/json")
 	message := MessageTemplate{Error: false}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	req, err := GrpcClient.GetAvailableScheduleTimeGroups(ctx, &pb.Empty{})
+	timeGroups, err := cache.GetAvailableTimeGroups(r.Context())
 	if err != nil {
 		message.Error = true
-		message.Message = "Could not get to the scraper"
+		message.Message = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonEcoder.Encode(message)
 		return
 	}
 
-	jsonEcoder.Encode(req)
+	jsonEcoder.Encode(timeGroups)
 }
 
 func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
@@ -117,26 +81,17 @@ func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
 	reqId := strings.ToLower(r.URL.Query().Get("id"))
 	reqTimeGroup := strings.ToLower(r.URL.Query().Get("time-group"))
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	req, err := GrpcClient.GetScheduleFileAsStr(ctx, &pb.ScheduleFileRequest{SchedType: reqType, SchedId: reqId, TimeGroup: reqTimeGroup})
+	cal, err := cache.GetSchedule(r.Context(), reqType, reqId, reqTimeGroup)
 	if err != nil {
 		message.Error = true
-		message.Message = "Could not get to the scraper"
+		message.Message = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonEcoder.Encode(message)
 		return
 	}
 
-	cal, err := icsProcessing.Parse(req.GetContent())
-	if err != nil {
-		message.Error = true
-		message.Message = "Could not parse the ics file"
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
 	jsonEcoder.Encode(cal)
+
 }
 
 func getScheduleListHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,24 +101,22 @@ func getScheduleListHandler(w http.ResponseWriter, r *http.Request) {
 
 	reqType := strings.ToLower(r.URL.Query().Get("type"))
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	req, err := GrpcClient.GetScheduleList(ctx, &pb.ScheduleTypeRequest{Type: reqType})
+	scheduleList, err := cache.GetScheduleList(r.Context(), reqType)
 	if err != nil {
 		message.Error = true
-		message.Message = "Could not get to the scraper"
+		message.Message = err.Error()
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonEcoder.Encode(message)
 		return
 	}
 
-	jsonEcoder.Encode(req)
+	jsonEcoder.Encode(scheduleList)
+
 }
 
 func main() {
-	createGrpcConnection()
-	defer grpcConn.Close()
+	grpcConnection.CreateGrpcConnection()
+	defer grpcConnection.GrpcConn.Close()
 	http.HandleFunc("GET /scheduleTypes", getScheduleTypeshandler)
 	http.HandleFunc("GET /updateTime", getUpdateTimeHandler)
 	http.HandleFunc("GET /avaibleScheduleTimeGroups", getAvaibleScheduleTimeGroupsHandler)
