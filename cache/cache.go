@@ -21,15 +21,17 @@ type scheduleFileStorage struct {
 }
 
 type schedule struct {
-	Id        string
-	Type      string
-	TimeGroup string
-	content   *icsProcessing.Calendar
+	Id            string
+	Type          string
+	TimeGroup     string
+	TimeGroupType string
+	content       *icsProcessing.Calendar
 }
 
 var scheduleUpdateTime time.Time
 var lastTimeUpdateCheck time.Time
 var cacheUpdateTimestamp time.Time
+
 var cachedScheduleTypes *pb.ScheduleTypes
 var cachedScheduleLists *scheduleListStorage
 var cachedAvailableTimeGroups *pb.AvailableTimeGroups
@@ -217,17 +219,17 @@ func refreshScheduleList(ctx context.Context, scheduleType string) (*pb.Schedule
 	return scheduleList, nil
 }
 
-func GetSchedule(ctx context.Context, schedType, schedId, timeGroup string) (*icsProcessing.Calendar, error) {
+func GetSchedule(ctx context.Context, schedType string, schedId string, timeGroup string, timeGroupType string) (*icsProcessing.Calendar, error) {
 	scheduleFilesMutex.RLock()
 	if !CheckIfCacheIsUpToDate() {
 		fmt.Println("Schedule cache is outdated")
 		scheduleFilesMutex.RUnlock()
-		return refreshSchedule(ctx, schedType, schedId, timeGroup)
+		return refreshSchedule(ctx, schedType, schedId, timeGroup, timeGroupType)
 	}
 
 	if cachedScheduleFiles != nil && cachedScheduleFiles.items != nil {
 		for _, s := range cachedScheduleFiles.items {
-			if s.Type == schedType && s.Id == schedId && s.TimeGroup == timeGroup {
+			if s.Type == schedType && s.Id == schedId && s.TimeGroup == timeGroup && s.TimeGroupType == timeGroupType {
 				fmt.Printf("Returning cached schedule for type: %s, id: %s, timeGroup: %s\n",
 					schedType, schedId, timeGroup)
 				result := s.content
@@ -240,27 +242,28 @@ func GetSchedule(ctx context.Context, schedType, schedId, timeGroup string) (*ic
 
 	fmt.Printf("Schedule cache is empty for type: %s, id: %s, timeGroup: %s\n",
 		schedType, schedId, timeGroup)
-	return refreshSchedule(ctx, schedType, schedId, timeGroup)
+	return refreshSchedule(ctx, schedType, schedId, timeGroup, timeGroupType)
 }
 
-func refreshSchedule(ctx context.Context, schedType, schedId, timeGroup string) (*icsProcessing.Calendar, error) {
-	fmt.Printf("Refreshing schedule cache for type: %s, id: %s, timeGroup: %s\n",
-		schedType, schedId, timeGroup)
+func refreshSchedule(ctx context.Context, schedType string, schedId string, timeGroup string, timeGroupType string) (*icsProcessing.Calendar, error) {
+	fmt.Printf("Refreshing schedule cache for type: %s, id: %s, timeGroup: %s, timeGroupType: %s\n",
+		schedType, schedId, timeGroup, timeGroupType)
 	scheduleFilesMutex.Lock()
 	defer scheduleFilesMutex.Unlock()
 
 	if CheckIfCacheIsUpToDate() {
 		for _, s := range cachedScheduleFiles.items {
-			if s.Type == schedType && s.Id == schedId && s.TimeGroup == timeGroup {
+			if s.Type == schedType && s.Id == schedId && s.TimeGroup == timeGroup && s.TimeGroupType == timeGroupType {
 				return s.content, nil
 			}
 		}
 	}
 
 	req, err := grpcConnection.GrpcClient.GetScheduleFileAsStr(ctx, &pb.ScheduleFileRequest{
-		SchedType: schedType,
-		SchedId:   schedId,
-		TimeGroup: timeGroup,
+		SchedType:     schedType,
+		SchedId:       schedId,
+		TimeGroup:     timeGroup,
+		TimeGroupType: timeGroupType,
 	})
 	if err != nil {
 		fmt.Printf("Error while getting schedule from grpc server: %v\n", err)
@@ -274,10 +277,11 @@ func refreshSchedule(ctx context.Context, schedType, schedId, timeGroup string) 
 	}
 
 	newSchedule := &schedule{
-		Id:        schedId,
-		Type:      schedType,
-		TimeGroup: timeGroup,
-		content:   &cal,
+		Id:            schedId,
+		Type:          schedType,
+		TimeGroup:     timeGroup,
+		TimeGroupType: timeGroupType,
+		content:       &cal,
 	}
 
 	if cachedScheduleFiles.items == nil {

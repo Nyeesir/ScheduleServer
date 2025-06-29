@@ -80,8 +80,9 @@ func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
 	reqType := strings.ToLower(r.URL.Query().Get("type"))
 	reqId := strings.ToLower(r.URL.Query().Get("id"))
 	reqTimeGroup := strings.ToLower(r.URL.Query().Get("time-group"))
+	reqTimeGroupType := strings.ToLower(r.URL.Query().Get("time-group-type"))
 
-	cal, err := cache.GetSchedule(r.Context(), reqType, reqId, reqTimeGroup)
+	cal, err := cache.GetSchedule(r.Context(), reqType, reqId, reqTimeGroup, reqTimeGroupType)
 	if err != nil {
 		message.Error = true
 		message.Message = err.Error()

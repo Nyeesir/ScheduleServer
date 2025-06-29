@@ -1,8 +1,5 @@
 package icsProcessing
 
-//TODO: Udar mózgu chyba, zamienić na mapy
-//NIESKOŃCZONA PĘTLA
-
 import (
 	"bufio"
 	"fmt"

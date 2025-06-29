@@ -54,6 +54,7 @@ message ScheduleFileRequest {
   string schedType = 1;
   string schedId = 2;
   string timeGroup = 3;
+  string timeGroupType = 4;
 }
 
 message ScheduleFileContent {

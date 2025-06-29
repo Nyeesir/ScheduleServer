@@ -366,6 +366,7 @@ type ScheduleFileRequest struct {
 	SchedType     string                 `protobuf:"bytes,1,opt,name=schedType,proto3" json:"schedType,omitempty"`
 	SchedId       string                 `protobuf:"bytes,2,opt,name=schedId,proto3" json:"schedId,omitempty"`
 	TimeGroup     string                 `protobuf:"bytes,3,opt,name=timeGroup,proto3" json:"timeGroup,omitempty"`
+	TimeGroupType string                 `protobuf:"bytes,4,opt,name=timeGroupType,proto3" json:"timeGroupType,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -417,6 +418,13 @@ func (x *ScheduleFileRequest) GetSchedId() string {
 func (x *ScheduleFileRequest) GetTimeGroup() string {
 	if x != nil {
 		return x.TimeGroup
+	}
+	return ""
+}
+
+func (x *ScheduleFileRequest) GetTimeGroupType() string {
+	if x != nil {
+		return x.TimeGroupType
 	}
 	return ""
 }
@@ -598,11 +606,12 @@ const file_protos_scraperProto_proto_rawDesc = "" +
 	"\x05weeks\x18\x02 \x03(\v2\x1e.AvailableTimeGroups.TimeGroupR\x05weeks\x1a/\n" +
 	"\tTimeGroup\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x0e\n" +
-	"\x02id\x18\x02 \x01(\tR\x02id\"k\n" +
+	"\x02id\x18\x02 \x01(\tR\x02id\"\x91\x01\n" +
 	"\x13ScheduleFileRequest\x12\x1c\n" +
 	"\tschedType\x18\x01 \x01(\tR\tschedType\x12\x18\n" +
 	"\aschedId\x18\x02 \x01(\tR\aschedId\x12\x1c\n" +
-	"\ttimeGroup\x18\x03 \x01(\tR\ttimeGroup\"/\n" +
+	"\ttimeGroup\x18\x03 \x01(\tR\ttimeGroup\x12$\n" +
+	"\rtimeGroupType\x18\x04 \x01(\tR\rtimeGroupType\"/\n" +
 	"\x13ScheduleFileContent\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\tR\acontent2\xa7\x02\n" +
 	"\x0fScheduleScraper\x12*\n" +
