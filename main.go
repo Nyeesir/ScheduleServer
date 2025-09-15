@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"go_schedule_server/configLoader"
 	"go_schedule_server/endpointHandlers"
 	"go_schedule_server/grpcConnection"
 	"net/http"
+	"os"
 )
 
 //TODO: BETTER ERROR HANDLING, LOGGING
@@ -24,5 +26,9 @@ func main() {
 	http.HandleFunc("GET /avaibleScheduleTimeGroups", endpointHandlers.GetAvaibleScheduleTimeGroupsHandler)
 	http.HandleFunc("GET /schedule", endpointHandlers.GetScheduleHandler)
 	http.HandleFunc("GET /scheduleList", endpointHandlers.GetScheduleListHandler)
-	http.ListenAndServe(":"+config.ServerPort, nil)
+	err = http.ListenAndServe(":"+config.ServerPort, nil)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Unable to set up server: %v\n", err)
+		os.Exit(1)
+	}
 }

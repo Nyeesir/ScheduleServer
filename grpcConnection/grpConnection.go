@@ -19,7 +19,7 @@ func CreateGrpcConnection(config configLoader.AppConfig) {
 	var err error
 	GrpcConn, err = grpc.NewClient(config.ScraperUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create scrapper connection: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Unable to create scrapper connection: %v\n", err)
 		os.Exit(1)
 	}
 	GrpcClient = pb.NewScheduleScraperClient(GrpcConn)
