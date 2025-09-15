@@ -3,6 +3,7 @@ module go_schedule_server
 go 1.24
 
 require (
+	github.com/goccy/go-yaml v1.18.0
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
 )

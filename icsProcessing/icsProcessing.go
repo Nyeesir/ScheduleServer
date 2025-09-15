@@ -98,7 +98,6 @@ func Parse(icsString string) (Calendar, error) {
 }
 
 func parseIcsTime(timestamp string) (time.Time, error) {
-	// Usuń literę 'Z' z końca, jeśli występuje
 	timestamp = strings.TrimSuffix(timestamp, "Z")
 
 	// Format czasu w ICS: YYYYMMDDTHHMMSS

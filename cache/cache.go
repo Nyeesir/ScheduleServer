@@ -47,14 +47,13 @@ var (
 
 func init() {
 	initOnce.Do(func() {
-		// Inicjalizacja struktur cache'a
 		cachedScheduleTypes = &pb.ScheduleTypes{}
 		cachedScheduleLists = &scheduleListStorage{
 			items: make(map[string]*pb.ScheduleListResponse),
 		}
 		cachedScheduleFiles = &scheduleFileStorage{}
 		cachedAvailableTimeGroups = &pb.AvailableTimeGroups{}
-		cacheUpdateTimestamp = time.Time{} // zero time
+		cacheUpdateTimestamp = time.Time{}
 	})
 }
 

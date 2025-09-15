@@ -3,23 +3,21 @@ package grpcConnection
 import (
 	"flag"
 	"fmt"
+	"go_schedule_server/configLoader"
 	pb "go_schedule_server/protos"
+	"os"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
 )
 
 var GrpcConn *grpc.ClientConn
 var GrpcClient pb.ScheduleScraperClient
 
-var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
-)
-
-func CreateGrpcConnection() {
+func CreateGrpcConnection(config configLoader.AppConfig) {
 	flag.Parse()
 	var err error
-	GrpcConn, err = grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	GrpcConn, err = grpc.NewClient(config.ScraperUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create scrapper connection: %v\n", err)
 		os.Exit(1)
