@@ -16,7 +16,7 @@ type MessageTemplate struct {
 	Error   bool   `json:"error"`
 }
 
-func GetScheduleTypeshandler(w http.ResponseWriter, r *http.Request) {
+func GetScheduleTypesHandler(w http.ResponseWriter, r *http.Request) {
 	jsonEcoder := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
 	message := MessageTemplate{Error: false}

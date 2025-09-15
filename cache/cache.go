@@ -1,7 +1,5 @@
 package cache
 
-//TODO: ADD LIMIT FOR CACHE AND CACHING TO FILE
-
 import (
 	"context"
 	"fmt"
@@ -14,10 +12,22 @@ import (
 
 type scheduleListStorage struct {
 	items map[string]*pb.ScheduleListResponse
+	sync.RWMutex
 }
 
 type scheduleFileStorage struct {
 	items []*schedule
+	sync.RWMutex
+}
+
+type scheduleTypesStorage struct {
+	*pb.ScheduleTypes
+	sync.RWMutex
+}
+
+type AvailableTimeGroupsStorage struct {
+	*pb.AvailableTimeGroups
+	sync.RWMutex
 }
 
 type schedule struct {
@@ -32,27 +42,24 @@ var scheduleUpdateTime time.Time
 var lastTimeUpdateCheck time.Time
 var cacheUpdateTimestamp time.Time
 
-var cachedScheduleTypes *pb.ScheduleTypes
+var cachedScheduleTypes *scheduleTypesStorage
 var cachedScheduleLists *scheduleListStorage
-var cachedAvailableTimeGroups *pb.AvailableTimeGroups
+var cachedAvailableTimeGroups *AvailableTimeGroupsStorage
 var cachedScheduleFiles *scheduleFileStorage
 
-var (
-	scheduleTypesMutex       sync.RWMutex
-	availableTimeGroupsMutex sync.RWMutex
-	scheduleListsMutex       sync.RWMutex
-	scheduleFilesMutex       sync.RWMutex
-	initOnce                 sync.Once
-)
+var initOnce sync.Once
 
 func init() {
 	initOnce.Do(func() {
-		cachedScheduleTypes = &pb.ScheduleTypes{}
+		cachedScheduleTypes = &scheduleTypesStorage{}
+		cachedScheduleTypes.ScheduleTypes = &pb.ScheduleTypes{}
 		cachedScheduleLists = &scheduleListStorage{
 			items: make(map[string]*pb.ScheduleListResponse),
 		}
 		cachedScheduleFiles = &scheduleFileStorage{}
-		cachedAvailableTimeGroups = &pb.AvailableTimeGroups{}
+		cachedScheduleFiles.items = make([]*schedule, 0)
+		cachedAvailableTimeGroups = &AvailableTimeGroupsStorage{}
+		cachedAvailableTimeGroups.AvailableTimeGroups = &pb.AvailableTimeGroups{}
 		cacheUpdateTimestamp = time.Time{}
 	})
 }
@@ -85,27 +92,27 @@ func getUpdateTime() time.Time {
 func clearCache() {
 	cachedScheduleTypes.ScheduleTypes = nil
 	cachedScheduleLists.items = map[string]*pb.ScheduleListResponse{}
-	cachedAvailableTimeGroups.Periods = nil
-	cachedAvailableTimeGroups.Weeks = nil
+	cachedAvailableTimeGroups.AvailableTimeGroups.Periods = nil
+	cachedAvailableTimeGroups.AvailableTimeGroups.Weeks = nil
 	cachedScheduleFiles.items = nil
 	return
 }
 
 func GetScheduleTypes(ctx context.Context) (*pb.ScheduleTypes, error) {
-	scheduleTypesMutex.RLock()
+	cachedScheduleTypes.RLock()
 	if !CheckIfCacheIsUpToDate() {
 		fmt.Println("Schedule cache is outdated")
-		scheduleTypesMutex.RUnlock()
+		cachedScheduleTypes.RUnlock()
 		return refreshScheduleTypes(ctx)
 	}
 
-	if cachedScheduleTypes != nil && len(cachedScheduleTypes.ScheduleTypes) > 0 {
+	if cachedScheduleTypes != nil && cachedScheduleTypes.ScheduleTypes != nil && len(cachedScheduleTypes.ScheduleTypes.ScheduleTypes) > 0 {
 		fmt.Println("Returning cached schedule types")
-		result := cachedScheduleTypes
-		scheduleTypesMutex.RUnlock()
+		result := cachedScheduleTypes.ScheduleTypes
+		cachedScheduleTypes.RUnlock()
 		return result, nil
 	}
-	scheduleTypesMutex.RUnlock()
+	cachedScheduleTypes.RUnlock()
 
 	fmt.Println("Schedule cache is empty")
 	return refreshScheduleTypes(ctx)
@@ -113,11 +120,11 @@ func GetScheduleTypes(ctx context.Context) (*pb.ScheduleTypes, error) {
 
 func refreshScheduleTypes(ctx context.Context) (*pb.ScheduleTypes, error) {
 	fmt.Println("Refreshing schedule types cache")
-	scheduleTypesMutex.Lock()
-	defer scheduleTypesMutex.Unlock()
+	cachedScheduleTypes.Lock()
+	defer cachedScheduleTypes.Unlock()
 
-	if CheckIfCacheIsUpToDate() && cachedScheduleTypes != nil && len(cachedScheduleTypes.ScheduleTypes) > 0 {
-		return cachedScheduleTypes, nil
+	if CheckIfCacheIsUpToDate() && cachedScheduleTypes != nil && cachedScheduleTypes.ScheduleTypes != nil && len(cachedScheduleTypes.ScheduleTypes.ScheduleTypes) > 0 {
+		return cachedScheduleTypes.ScheduleTypes, nil
 	}
 
 	scheduleTypes, err := grpcConnection.GrpcClient.GetScheduleTypes(ctx, &pb.Empty{})
@@ -126,27 +133,28 @@ func refreshScheduleTypes(ctx context.Context) (*pb.ScheduleTypes, error) {
 		return nil, err
 	}
 
-	cachedScheduleTypes = scheduleTypes
+	cachedScheduleTypes = &scheduleTypesStorage{}
+	cachedScheduleTypes.ScheduleTypes = scheduleTypes
 	cacheUpdateTimestamp = time.Now()
 
 	return scheduleTypes, nil
 }
 
 func GetAvailableTimeGroups(ctx context.Context) (*pb.AvailableTimeGroups, error) {
-	availableTimeGroupsMutex.RLock()
+	cachedAvailableTimeGroups.RLock()
 	if !CheckIfCacheIsUpToDate() {
 		fmt.Println("Time groups cache is outdated")
-		availableTimeGroupsMutex.RUnlock()
+		cachedAvailableTimeGroups.RUnlock()
 		return refreshAvailableTimeGroups(ctx)
 	}
 
 	if cachedAvailableTimeGroups != nil && (len(cachedAvailableTimeGroups.Periods) > 0 || len(cachedAvailableTimeGroups.Weeks) > 0) {
 		fmt.Println("Returning cached time groups")
-		result := cachedAvailableTimeGroups
-		availableTimeGroupsMutex.RUnlock()
+		result := cachedAvailableTimeGroups.AvailableTimeGroups
+		cachedAvailableTimeGroups.RUnlock()
 		return result, nil
 	}
-	availableTimeGroupsMutex.RUnlock()
+	cachedAvailableTimeGroups.RUnlock()
 
 	fmt.Println("Time groups cache is empty")
 	return refreshAvailableTimeGroups(ctx)
@@ -154,12 +162,12 @@ func GetAvailableTimeGroups(ctx context.Context) (*pb.AvailableTimeGroups, error
 
 func refreshAvailableTimeGroups(ctx context.Context) (*pb.AvailableTimeGroups, error) {
 	fmt.Println("Refreshing time groups cache")
-	availableTimeGroupsMutex.Lock()
-	defer availableTimeGroupsMutex.Unlock()
+	cachedAvailableTimeGroups.Lock()
+	defer cachedAvailableTimeGroups.Unlock()
 
 	if CheckIfCacheIsUpToDate() && cachedAvailableTimeGroups != nil &&
 		(len(cachedAvailableTimeGroups.Periods) > 0 || len(cachedAvailableTimeGroups.Weeks) > 0) {
-		return cachedAvailableTimeGroups, nil
+		return cachedAvailableTimeGroups.AvailableTimeGroups, nil
 	}
 
 	timeGroups, err := grpcConnection.GrpcClient.GetAvailableScheduleTimeGroups(ctx, &pb.Empty{})
@@ -168,28 +176,29 @@ func refreshAvailableTimeGroups(ctx context.Context) (*pb.AvailableTimeGroups, e
 		return nil, err
 	}
 
-	cachedAvailableTimeGroups = timeGroups
+	cachedAvailableTimeGroups = &AvailableTimeGroupsStorage{}
+	cachedAvailableTimeGroups.AvailableTimeGroups = timeGroups
 	cacheUpdateTimestamp = time.Now()
 
 	return timeGroups, nil
 }
 
 func GetScheduleList(ctx context.Context, scheduleType string) (*pb.ScheduleListResponse, error) {
-	scheduleListsMutex.RLock()
+	cachedScheduleLists.RLock()
 	if !CheckIfCacheIsUpToDate() {
 		fmt.Println("Schedule list cache is outdated")
-		scheduleListsMutex.RUnlock()
+		cachedScheduleLists.RUnlock()
 		return refreshScheduleList(ctx, scheduleType)
 	}
 
 	if cachedScheduleLists != nil {
 		if list, exists := cachedScheduleLists.items[scheduleType]; exists {
 			fmt.Printf("Returning cached schedule list for type: %s\n", scheduleType)
-			scheduleListsMutex.RUnlock()
+			cachedScheduleLists.RUnlock()
 			return list, nil
 		}
 	}
-	scheduleListsMutex.RUnlock()
+	cachedScheduleLists.RUnlock()
 
 	fmt.Printf("Schedule list cache is empty for type: %s\n", scheduleType)
 	return refreshScheduleList(ctx, scheduleType)
@@ -197,8 +206,8 @@ func GetScheduleList(ctx context.Context, scheduleType string) (*pb.ScheduleList
 
 func refreshScheduleList(ctx context.Context, scheduleType string) (*pb.ScheduleListResponse, error) {
 	fmt.Printf("Refreshing schedule list cache for type: %s\n", scheduleType)
-	scheduleListsMutex.Lock()
-	defer scheduleListsMutex.Unlock()
+	cachedScheduleLists.Lock()
+	defer cachedScheduleLists.Unlock()
 
 	if CheckIfCacheIsUpToDate() {
 		if list, exists := cachedScheduleLists.items[scheduleType]; exists {
@@ -219,10 +228,10 @@ func refreshScheduleList(ctx context.Context, scheduleType string) (*pb.Schedule
 }
 
 func GetSchedule(ctx context.Context, schedType string, schedId string, timeGroup string, timeGroupType string) (*icsProcessing.Calendar, error) {
-	scheduleFilesMutex.RLock()
+	cachedScheduleFiles.RLock()
 	if !CheckIfCacheIsUpToDate() {
 		fmt.Println("Schedule cache is outdated")
-		scheduleFilesMutex.RUnlock()
+		cachedScheduleFiles.RUnlock()
 		return refreshSchedule(ctx, schedType, schedId, timeGroup, timeGroupType)
 	}
 
@@ -232,12 +241,12 @@ func GetSchedule(ctx context.Context, schedType string, schedId string, timeGrou
 				fmt.Printf("Returning cached schedule for type: %s, id: %s, timeGroup: %s\n",
 					schedType, schedId, timeGroup)
 				result := s.content
-				scheduleFilesMutex.RUnlock()
+				cachedScheduleFiles.RUnlock()
 				return result, nil
 			}
 		}
 	}
-	scheduleFilesMutex.RUnlock()
+	cachedScheduleFiles.RUnlock()
 
 	fmt.Printf("Schedule cache is empty for type: %s, id: %s, timeGroup: %s\n",
 		schedType, schedId, timeGroup)
@@ -247,8 +256,8 @@ func GetSchedule(ctx context.Context, schedType string, schedId string, timeGrou
 func refreshSchedule(ctx context.Context, schedType string, schedId string, timeGroup string, timeGroupType string) (*icsProcessing.Calendar, error) {
 	fmt.Printf("Refreshing schedule cache for type: %s, id: %s, timeGroup: %s, timeGroupType: %s\n",
 		schedType, schedId, timeGroup, timeGroupType)
-	scheduleFilesMutex.Lock()
-	defer scheduleFilesMutex.Unlock()
+	cachedScheduleFiles.Lock()
+	defer cachedScheduleFiles.Unlock()
 
 	if CheckIfCacheIsUpToDate() {
 		for _, s := range cachedScheduleFiles.items {
