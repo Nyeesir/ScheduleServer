@@ -1,0 +1,405 @@
+openapi: 3.0.3
+info:
+  title: Schedule Server API
+  version: "1.0.0"
+  description: API pozwalające na komunikację z uczelnianym planem zajęć poprzez serwer proxy. Pozwala na dostęp do planu bez korzystania z VPNa.
+servers:
+  - url: http://localhost:8080
+paths:
+  /scheduleTypes:
+    get:
+      summary: Pobierz typy planów
+      tags: [Schedule]
+      responses:
+        "200":
+          description: Lista typów planów
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleTypes"
+        "500":
+          description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /updateTime:
+    get:
+      summary: Pobierz czas ostatniej aktualizacji
+      tags: [Schedule]
+      responses:
+        "200":
+          description: Czas ostatniej aktualizacji jako string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateTime"
+        "500":
+          description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /avaibleScheduleTimeGroups:
+    get:
+      summary: Pobierz dostępne grupy czasowe (okresy/tygodnie)
+      tags: [Schedule]
+      responses:
+        "200":
+          description: Dostępne grupy czasowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailableTimeGroups"
+        "500":
+          description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /schedule:
+    get:
+      summary: Pobierz dane planu (kalendarz) dla wskazanych parametrów
+      tags: [Schedule]
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Typ planu
+        - in: query
+          name: id
+          schema:
+            type: string
+          description: Identyfikator planu
+        - in: query
+          name: time-group
+          schema:
+            type: string
+          description: Identyfikator grupy czasowej (np. okres/tydzień)
+        - in: query
+          name: time-group-type
+          schema:
+            type: string
+          description: Typ grupy czasowej (np. periods/weeks)
+      responses:
+        "200":
+          description: Dane planu w formacie JSON
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Calendar"
+        "500":
+          description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /scheduleList:
+    get:
+      summary: Pobierz listę pozycji dla danego typu planu
+      tags: [Schedule]
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Typ planu, dla którego ma zostać pobrana lista
+      responses:
+        "200":
+          description: Lista pozycji
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleList"
+        "500":
+          description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+components:
+  schemas:
+    ErrorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Opis błędu
+        error:
+          type: boolean
+      required: [error]
+      example:
+          message: "Could not get to the scraper"
+          error: True
+
+    UpdateTime:
+      type: object
+      properties:
+        time:
+          type: string
+          description: Czas w formacie tekstowym
+      example:
+        time: "2025-09-15 16:51:44 +0200 CEST"
+
+    ScheduleTypes:
+      type: object
+      properties:
+        scheduleTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleType"
+      required: [scheduleTypes]
+      example:
+          scheduleTypes:
+          - scheduleTypeName: "Grupy"
+            scheduleTypeId: "1"
+          - scheduleTypeName: "Nauczyciele"
+            scheduleTypeId: "2"
+          - scheduleTypeName: "Sale|Zasoby"
+            scheduleTypeId: "3"
+
+    ScheduleType:
+      type: object
+      properties:
+        scheduleTypeName:
+          type: string
+          description: Nazwa kategorii planów
+        scheduleTypeId:
+          type: string
+          description: Id kategorii
+      required: [scheduleTypeName, scheduleTpeId]
+
+    ScheduleList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleItem"
+      required: [items]
+      example:
+        items:
+          - name: "Biofizyka I stopnia"
+            id: "28638"
+            type: "2"
+            hasSchedule: true
+            children:
+              - name: "BF-1 rok"
+                id: "58214"
+                type: "2"
+                hasSchedule: true
+                children:
+                  - name: "BF/ I stopień/ 1rok / gr. 1"
+                    id: "58215"
+                    type: "0"
+                    hasSchedule: true
+              - name: "BF-2-rok"
+                id: "64775"
+                type: "2"
+                hasSchedule: true
+                children:
+                  - name: "BF/ I stopień/ 2rok"
+                    id: "28897"
+                    type: "0"
+                    hasSchedule: true
+
+    ScheduleItem:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        type:
+          type: string
+        hasSchedule:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleItem"
+      required: [name, id, type, hasSchedule]
+
+    AvailableTimeGroups:
+      type: object
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeGroup"
+        weeks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeGroup"
+      required: [periods, weeks]
+      example:
+        periods:
+          - name: "Sem. letni"
+            id: "12"
+          - name: "Nieparzyste"
+            id: "13"
+          - name: "Parzyste"
+            id: "14"
+        weeks:
+          - name: "24.02-02.03"
+            id: "33"
+          - name: "03.03-09.03"
+            id: "34"
+          - name: "10.03-16.03"
+            id: "35"
+          - name: "17.03-23.03"
+            id: "36"
+
+    TimeGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nazwa przedziału czasu
+        id:
+          type: string
+          description: Id przedziału czasu
+      required: [name, id]
+
+    Calendar:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nazwa planu
+        version:
+          type: string
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        timezone:
+          type: string
+          description: Strefa czasowa
+      required: [name, version, events]
+      example:
+        name: "Plan zajęć."
+        version: "2.0"
+        timezone: "Europe/Warsaw"
+        events:
+          - start: "2025-02-25T08:45:00Z"
+            end: "2025-02-25T10:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250225084500"
+            status: "CONFIRMED"
+          - start: "2025-03-04T08:45:00Z"
+            end: "2025-03-04T10:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250304084500"
+            status: "CONFIRMED"
+          - start: "2025-03-11T08:45:00Z"
+            end: "2025-03-11T10:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250311084500"
+            status: "CONFIRMED"
+          - start: "2025-03-18T08:45:00Z"
+            end: "2025-03-18T10:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250318084500"
+            status: "CONFIRMED"
+          - start: "2025-03-25T08:45:00Z"
+            end: "2025-03-25T10:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250325084500"
+            status: "CONFIRMED"
+          - start: "2025-04-01T07:45:00Z"
+            end: "2025-04-01T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250401074500"
+            status: "CONFIRMED"
+          - start: "2025-04-08T07:45:00Z"
+            end: "2025-04-08T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250408074500"
+            status: "CONFIRMED"
+          - start: "2025-04-15T07:45:00Z"
+            end: "2025-04-15T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250415074500"
+            status: "CONFIRMED"
+          - start: "2025-04-22T07:45:00Z"
+            end: "2025-04-22T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250422074500"
+            status: "CONFIRMED"
+          - start: "2025-04-29T07:45:00Z"
+            end: "2025-04-29T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250429074500"
+            status: "CONFIRMED"
+          - start: "2025-05-06T07:45:00Z"
+            end: "2025-05-06T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250506074500"
+            status: "CONFIRMED"
+          - start: "2025-05-13T07:45:00Z"
+            end: "2025-05-13T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250513074500"
+            status: "CONFIRMED"
+          - start: "2025-05-20T07:45:00Z"
+            end: "2025-05-20T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250520074500"
+            status: "CONFIRMED"
+          - start: "2025-05-27T07:45:00Z"
+            end: "2025-05-27T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250527074500"
+            status: "CONFIRMED"
+          - start: "2025-06-03T07:45:00Z"
+            end: "2025-06-03T09:15:00Z"
+            timestamp: "2025-09-15T17:44:54Z"
+            summary: "Tss lab MMa B404"
+            uid: "20250603074500"
+            status: "CONFIRMED"
+
+    Event:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+        summary:
+          type: string
+        uid:
+          type: string
+        status:
+          type: string
+          enum: [CONFIRMED, TENTATIVE, CANCELLED]
+      required: [start, end, timestamp, summary, uid, status]
+
+tags:
+  - name: Schedule
+    description: Operacje związane z planami

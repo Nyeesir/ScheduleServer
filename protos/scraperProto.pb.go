@@ -476,7 +476,7 @@ func (x *ScheduleFileContent) GetContent() string {
 type ScheduleTypes_ScheduleType struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	ScheduleTypeName string                 `protobuf:"bytes,1,opt,name=scheduleTypeName,proto3" json:"scheduleTypeName,omitempty"`
-	ScheduleTpeId    string                 `protobuf:"bytes,2,opt,name=scheduleTpeId,proto3" json:"scheduleTpeId,omitempty"`
+	ScheduleTypeId   string                 `protobuf:"bytes,2,opt,name=scheduleTypeId,proto3" json:"scheduleTypeId,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -518,9 +518,9 @@ func (x *ScheduleTypes_ScheduleType) GetScheduleTypeName() string {
 	return ""
 }
 
-func (x *ScheduleTypes_ScheduleType) GetScheduleTpeId() string {
+func (x *ScheduleTypes_ScheduleType) GetScheduleTypeId() string {
 	if x != nil {
-		return x.ScheduleTpeId
+		return x.ScheduleTypeId
 	}
 	return ""
 }
@@ -582,12 +582,12 @@ var File_protos_scraperProto_proto protoreflect.FileDescriptor
 const file_protos_scraperProto_proto_rawDesc = "" +
 	"\n" +
 	"\x19protos/scraperProto.proto\"\a\n" +
-	"\x05Empty\"\xb4\x01\n" +
+	"\x05Empty\"\xb6\x01\n" +
 	"\rScheduleTypes\x12A\n" +
-	"\rscheduleTypes\x18\x01 \x03(\v2\x1b.ScheduleTypes.ScheduleTypeR\rscheduleTypes\x1a`\n" +
+	"\rscheduleTypes\x18\x01 \x03(\v2\x1b.ScheduleTypes.ScheduleTypeR\rscheduleTypes\x1ab\n" +
 	"\fScheduleType\x12*\n" +
-	"\x10scheduleTypeName\x18\x01 \x01(\tR\x10scheduleTypeName\x12$\n" +
-	"\rscheduleTpeId\x18\x02 \x01(\tR\rscheduleTpeId\" \n" +
+	"\x10scheduleTypeName\x18\x01 \x01(\tR\x10scheduleTypeName\x12&\n" +
+	"\x0escheduleTypeId\x18\x02 \x01(\tR\x0escheduleTypeId\" \n" +
 	"\n" +
 	"UpdateTime\x12\x12\n" +
 	"\x04time\x18\x01 \x01(\x02R\x04time\")\n" +

@@ -16,7 +16,7 @@ message ScheduleTypes {
 
   message ScheduleType {
     string scheduleTypeName = 1;
-    string scheduleTpeId = 2;
+    string scheduleTypeId = 2;
   }
 }
 
