@@ -23,6 +23,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
+        "504":
+          description: Przekroczono czas oczekiwania
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
 
   /updateTime:
     get:
@@ -42,6 +48,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
 
+        "504":
+          description: Przekroczono czas oczekiwania
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+
   /avaibleScheduleTimeGroups:
     get:
       summary: Pobierz dostępne grupy czasowe (okresy/tygodnie)
@@ -55,6 +69,12 @@ paths:
                 $ref: "#/components/schemas/AvailableTimeGroups"
         "500":
           description: Błąd serwera
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        "504":
+          description: Przekroczono czas oczekiwania
           content:
             application/json:
               schema:
@@ -92,8 +112,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Calendar"
-        "500":
-          description: Błąd serwera
+        "404":
+          description: Złe parametry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        "504":
+          description: Przekroczono czas oczekiwania
           content:
             application/json:
               schema:
@@ -110,14 +136,14 @@ paths:
             type: string
           description: Typ planu, dla którego ma zostać pobrana lista
       responses:
-        "200":
-          description: Lista pozycji
+        "404":
+          description: Złe parametry
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ScheduleList"
-        "500":
-          description: Błąd serwera
+                $ref: "#/components/schemas/ErrorMessage"
+        "504":
+          description: Przekroczono czas oczekiwania
           content:
             application/json:
               schema:

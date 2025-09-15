@@ -9,8 +9,6 @@ import (
 	"os"
 )
 
-//TODO: BETTER ERROR HANDLING, LOGGING
-
 func main() {
 	config := configLoader.AppConfig{ScraperUrl: "localhost:50051", ServerPort: "8080"}
 	err := configLoader.LoadOrCreateYamlConfig("config.yaml", &config, true)
@@ -23,7 +21,7 @@ func main() {
 
 	http.HandleFunc("GET /scheduleTypes", endpointHandlers.GetScheduleTypesHandler)
 	http.HandleFunc("GET /updateTime", endpointHandlers.GetUpdateTimeHandler)
-	http.HandleFunc("GET /avaibleScheduleTimeGroups", endpointHandlers.GetAvaibleScheduleTimeGroupsHandler)
+	http.HandleFunc("GET /avaibleScheduleTimeGroups", endpointHandlers.GetAvailableScheduleTimeGroupsHandler)
 	http.HandleFunc("GET /schedule", endpointHandlers.GetScheduleHandler)
 	http.HandleFunc("GET /scheduleList", endpointHandlers.GetScheduleListHandler)
 	err = http.ListenAndServe(":"+config.ServerPort, nil)

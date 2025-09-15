@@ -9,6 +9,9 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type MessageTemplate struct {
@@ -23,10 +26,20 @@ func GetScheduleTypesHandler(w http.ResponseWriter, r *http.Request) {
 
 	types, err := cache.GetScheduleTypes(r.Context())
 	if err != nil {
-		message.Error = true
-		message.Message = "Could not get to the scraper"
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message.Error = true
+		st, _ := status.FromError(err)
+		switch st.Code() {
+		case codes.DeadlineExceeded:
+			message.Message = "Could not get the data from outside server"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		case codes.NotFound:
+			message.Message = "Could not get the schedule types"
+			w.WriteHeader(http.StatusInternalServerError)
+		default:
+			message.Message = "Could not get to the scraper"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		}
 		jsonEcoder.Encode(message)
 		return
 	}
@@ -41,10 +54,20 @@ func GetUpdateTimeHandler(w http.ResponseWriter, r *http.Request) {
 
 	req, err := grpcConnection.GrpcClient.GetUpdateTime(r.Context(), &pb.Empty{})
 	if err != nil {
-		message.Error = true
-		message.Message = "Could not get to the scraper"
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message.Error = true
+		st, _ := status.FromError(err)
+		switch st.Code() {
+		case codes.DeadlineExceeded:
+			message.Message = "Could not get the data from outside server"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		case codes.NotFound:
+			message.Message = "Could not get the schedule types"
+			w.WriteHeader(http.StatusInternalServerError)
+		default:
+			message.Message = "Could not get to the scraper"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		}
 		jsonEcoder.Encode(message)
 		return
 	}
@@ -53,17 +76,27 @@ func GetUpdateTimeHandler(w http.ResponseWriter, r *http.Request) {
 	jsonEcoder.Encode(map[string]string{"time": updateTime})
 }
 
-func GetAvaibleScheduleTimeGroupsHandler(w http.ResponseWriter, r *http.Request) {
+func GetAvailableScheduleTimeGroupsHandler(w http.ResponseWriter, r *http.Request) {
 	jsonEcoder := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
 	message := MessageTemplate{Error: false}
 
 	timeGroups, err := cache.GetAvailableTimeGroups(r.Context())
 	if err != nil {
-		message.Error = true
-		message.Message = "Could not get to the scraper"
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message.Error = true
+		st, _ := status.FromError(err)
+		switch st.Code() {
+		case codes.DeadlineExceeded:
+			message.Message = "Could not get the data from outside server"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		case codes.NotFound:
+			message.Message = "Could not get the schedule types"
+			w.WriteHeader(http.StatusInternalServerError)
+		default:
+			message.Message = "Could not get to the scraper"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		}
 		jsonEcoder.Encode(message)
 		return
 	}
@@ -83,10 +116,20 @@ func GetScheduleHandler(w http.ResponseWriter, r *http.Request) {
 
 	cal, err := cache.GetSchedule(r.Context(), reqType, reqId, reqTimeGroup, reqTimeGroupType)
 	if err != nil {
-		message.Error = true
-		message.Message = "Could not get to the scraper"
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message.Error = true
+		st, _ := status.FromError(err)
+		switch st.Code() {
+		case codes.DeadlineExceeded:
+			message.Message = "Could not get the data from outside server"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		case codes.InvalidArgument:
+			message.Message = "Invalid arguments"
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			message.Message = "Could not get to the scraper"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		}
 		jsonEcoder.Encode(message)
 		return
 	}
@@ -104,10 +147,20 @@ func GetScheduleListHandler(w http.ResponseWriter, r *http.Request) {
 
 	scheduleList, err := cache.GetScheduleList(r.Context(), reqType)
 	if err != nil {
-		message.Error = true
-		message.Message = "Could not get to the scraper"
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		message.Error = true
+		st, _ := status.FromError(err)
+		switch st.Code() {
+		case codes.DeadlineExceeded:
+			message.Message = "Could not get the data from outside server"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		case codes.InvalidArgument:
+			message.Message = "Invalid arguments"
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			message.Message = "Could not get to the scraper"
+			w.WriteHeader(http.StatusGatewayTimeout)
+		}
 		jsonEcoder.Encode(message)
 		return
 	}
